@@ -11,9 +11,12 @@ const birthdayMessage = "Hari ini ulang tahun ataa yeyy! 🎉 Semoga tahun baru 
 // Fungsi untuk memulai musik
 function startMusic() {
     if (!musicStarted && bgMusic) {
+        bgMusic.muted = false;
         bgMusic.volume = 0.3;
         bgMusic.play().catch(() => {
             document.addEventListener('click', () => {
+                bgMusic.muted = false;
+                bgMusic.volume = 0.3;
                 bgMusic.play();
                 musicStarted = true;
             }, { once: true });
@@ -369,6 +372,7 @@ function animateVideoSection() {
     // Auto play video after animation
     setTimeout(() => {
         if (video) {
+            video.muted = false;
             video.play().catch(e => console.log('Video autoplay blocked'));
             
             // Listen for video end
