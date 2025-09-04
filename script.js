@@ -5,6 +5,25 @@ let tl = gsap.timeline();
 const bgMusic = document.getElementById('bgMusic');
 let musicStarted = false;
 
+// YouTube Player
+let player;
+
+// YouTube API ready callback
+function onYouTubeIframeAPIReady() {
+    // Player akan dibuat saat section video ditampilkan
+}
+
+// YouTube player state change
+function onPlayerStateChange(event) {
+    if (event.data == YT.PlayerState.ENDED) {
+        // Video selesai, pindah ke thank you
+        setTimeout(() => {
+            showSection('thankYou');
+            animateThankYou();
+        }, 2000);
+    }
+}
+
 // Pesan typewriter
 const birthdayMessage = "Hari ini ulang tahun ataa yeyy! 🎉 Semoga tahun baru ini membawa kebahagiaan yang tak terbatas yaa cintaa, kesehatan jugaa, dan semua impian yang ataa dambakan ituu jadii nyataa suatu saat nantii! 🌟 Kamu adalah orang yang hebat di mata akuu, kamu layak mendapatkan nyaa! 💖 Selamat ulang tahun, semoga panjang umur yaa! 🎂✨";
 
@@ -67,18 +86,6 @@ function animateChatIntro() {
     
     // Auto start setelah chat selesai
     setTimeout(() => {
-        // Unmute dan play musik setelah section pertama selesai
-        if (bgMusic) {
-            bgMusic.muted = false;
-            bgMusic.volume = 0.3;
-            bgMusic.play().catch(() => {
-                document.addEventListener('click', () => {
-                    bgMusic.muted = false;
-                    bgMusic.volume = 0.3;
-                    bgMusic.play();
-                }, { once: true });
-            });
-        }
         setTimeout(() => {
             showSection('mainWish');
             startMainSequence();
@@ -368,9 +375,8 @@ function animateFinalWords() {
 // Animasi video section
 function animateVideoSection() {
     const videoContainer = document.querySelector('.video-container');
-    const video = document.getElementById('birthdayVideo');
     
-    // Pause background music
+    // Pause background music saat video dimulai
     if (bgMusic) {
         bgMusic.pause();
     }
@@ -380,15 +386,22 @@ function animateVideoSection() {
         { y: 0, opacity: 1, scale: 1, duration: 1.5, ease: "back.out(1.7)" }
     );
     
-    // Auto play video after animation
+    // Buat YouTube player setelah animasi
     setTimeout(() => {
-        if (video) {
-            // Video akan autoplay karena sudah ada autoplay=1 di src
-            // Set timeout untuk pindah ke thank you setelah video selesai (estimasi durasi video)
-            setTimeout(() => {
-                showSection('thankYou');
-                animateThankYou();
-            }, 60000); // Sesuaikan dengan durasi video YouTube (60 detik)
+        if (typeof YT !== 'undefined' && YT.Player) {
+            player = new YT.Player('birthdayVideo', {
+                height: '100%',
+                width: '100%',
+                videoId: 'iacpxshC4sI',
+                playerVars: {
+                    'autoplay': 1,
+                    'controls': 1,
+                    'rel': 0
+                },
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
         }
     }, 1500);
     
@@ -461,6 +474,21 @@ document.querySelectorAll('.dancing-emojis span').forEach(emoji => {
 // Animasi saat halaman dimuat
 window.addEventListener('load', () => {
     animateChatIntro();
+    
+    // Mulai musik setelah 5 detik website dibuka
+    setTimeout(() => {
+        if (bgMusic) {
+            bgMusic.muted = false;
+            bgMusic.volume = 0.3;
+            bgMusic.play().catch(() => {
+                document.addEventListener('click', () => {
+                    bgMusic.muted = false;
+                    bgMusic.volume = 0.3;
+                    bgMusic.play();
+                }, { once: true });
+            });
+        }
+    }, 5000);
 });
 
 // Tambah sparkle effect secara random
