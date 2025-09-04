@@ -8,21 +8,17 @@ let musicStarted = false;
 // Pesan typewriter
 const birthdayMessage = "Hari ini ulang tahun ataa yeyy! 🎉 Semoga tahun baru ini membawa kebahagiaan yang tak terbatas yaa cintaa, kesehatan jugaa, dan semua impian yang ataa dambakan ituu jadii nyataa suatu saat nantii! 🌟 Kamu adalah orang yang hebat di mata akuu, kamu layak mendapatkan nyaa! 💖 Selamat ulang tahun, semoga panjang umur yaa! 🎂✨";
 
-// Fungsi untuk memulai musik otomatis
+// Fungsi untuk memulai musik
 function startMusic() {
     if (!musicStarted && bgMusic) {
-        bgMusic.muted = false;
         bgMusic.volume = 0.3;
-        bgMusic.play().then(() => {
-            musicStarted = true;
-        }).catch(() => {
+        bgMusic.play().catch(() => {
             document.addEventListener('click', () => {
-                bgMusic.muted = false;
-                bgMusic.volume = 0.3;
                 bgMusic.play();
                 musicStarted = true;
             }, { once: true });
         });
+        musicStarted = true;
     }
 }
 
