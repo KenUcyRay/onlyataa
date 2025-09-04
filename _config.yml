@@ -1,0 +1,6 @@
+include:
+  - music/
+  - img/
+  - "*.mp3"
+  - "*.wav"
+  - "*.ogg"
