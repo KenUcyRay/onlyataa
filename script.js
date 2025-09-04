@@ -67,7 +67,18 @@ function animateChatIntro() {
     
     // Auto start setelah chat selesai
     setTimeout(() => {
-        startMusic();
+        // Unmute dan play musik setelah section pertama selesai
+        if (bgMusic) {
+            bgMusic.muted = false;
+            bgMusic.volume = 0.3;
+            bgMusic.play().catch(() => {
+                document.addEventListener('click', () => {
+                    bgMusic.muted = false;
+                    bgMusic.volume = 0.3;
+                    bgMusic.play();
+                }, { once: true });
+            });
+        }
         setTimeout(() => {
             showSection('mainWish');
             startMainSequence();
@@ -372,15 +383,12 @@ function animateVideoSection() {
     // Auto play video after animation
     setTimeout(() => {
         if (video) {
-            // Update iframe src to include autoplay when section is shown
-            const currentSrc = video.src;
-            video.src = currentSrc.replace('?mute=1', '?autoplay=1&mute=1');
-            
-            // Set timeout for video end simulation (since we can't detect iframe video end)
+            // Video akan autoplay karena sudah ada autoplay=1 di src
+            // Set timeout untuk pindah ke thank you setelah video selesai (estimasi durasi video)
             setTimeout(() => {
                 showSection('thankYou');
                 animateThankYou();
-            }, 30000); // Adjust based on video length
+            }, 60000); // Sesuaikan dengan durasi video YouTube (60 detik)
         }
     }, 1500);
     
