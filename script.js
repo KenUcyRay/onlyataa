@@ -372,16 +372,15 @@ function animateVideoSection() {
     // Auto play video after animation
     setTimeout(() => {
         if (video) {
-            video.muted = false;
-            video.play().catch(e => console.log('Video autoplay blocked'));
+            // Update iframe src to include autoplay when section is shown
+            const currentSrc = video.src;
+            video.src = currentSrc.replace('?mute=1', '?autoplay=1&mute=1');
             
-            // Listen for video end
-            video.addEventListener('ended', () => {
-                setTimeout(() => {
-                    showSection('thankYou');
-                    animateThankYou();
-                }, 2000);
-            });
+            // Set timeout for video end simulation (since we can't detect iframe video end)
+            setTimeout(() => {
+                showSection('thankYou');
+                animateThankYou();
+            }, 30000); // Adjust based on video length
         }
     }, 1500);
     
